@@ -10,38 +10,56 @@
 
 <body class="text-gray-900 body-font bg-blue-100">
 
-
+    <div id="loader-placeholder"></div>
     <div id="header-placeholder"></div>
 
 
-<div class="container px-5 py-24 mx-auto flex justify-center">
-    <form action="register" class="bg-gray-300 rounded-lg border border-gray-300 p-8 flex flex-col w-full md:w-1/2 lg:w-1/3">
-        <h2 class="text-gray-900 text-lg font-medium title-font mb-5">Registrarse</h2>
+    <div class="container px-5 py-24 mx-auto flex justify-center">
+        <form action="register"
+            class="register bg-gray-300 rounded-lg border border-gray-300 p-8 flex flex-col w-full md:w-1/2 lg:w-1/3">
+            <h2 class="text-gray-900 text-lg font-medium title-font mb-5">Registrarse</h2>
+            <!-- Tipo de usuario -->
+            <select name="tipoUsuario"
+                class="bg-white rounded border border-gray-400 focus:outline-none focus:border-green-500 text-base px-4 py-2 mb-4">
+                <option selected disabled>Seleccione tipo de usuario</option>
+                <option value="docente">Docente</option>
+                <option value="oferente">Oferente</option>
+            </select>
 
-        <select class="bg-white rounded border border-gray-400 focus:outline-none focus:border-green-500 text-base px-4 py-2 mb-4">
-            <option selected disabled>Seleccione tipo de usuario</option>
-            <option value="docente">Docente</option>
-            <option value="oferente">Oferente</option>
-        </select>
+            <!-- Tipo de identificación -->
+            <select name="tipoIdentificacion"
+                class="tipo-id bg-white rounded border border-gray-400 focus:outline-none focus:border-green-500 text-base px-4 py-2 mb-4">
+                <option selected disabled>Seleccione tipo de identificación</option>
+                <option value="cedula">Cédula física</option>
+                <option value="pasaporte">Número de pasaporte</option>
+            </select>
 
-        <input
-            class="bg-white rounded border border-gray-400 focus:outline-none focus:border-green-500 text-base px-4 py-2 mb-4"
-            placeholder="Nombre" type="text">
-        <input
-            class="bg-white rounded border border-gray-400 focus:outline-none focus:border-green-500 text-base px-4 py-2 mb-4"
-            placeholder="Email" type="email">
-        <input
-            class="bg-white rounded border border-gray-400 focus:outline-none focus:border-green-500 text-base px-4 py-2 mb-4"
-            placeholder="Contraseña" type="password">
-        
-        <button
-            class="text-white bg-green-500 border-0 py-2 px-8 focus:outline-none hover:bg-green-600 rounded text-lg">Registrarse</button>
-        <p class="text-xs text-gray-500 mt-3">
-            <a href="index.html" class="text-green-500">Volver al inicio</a> |
-            <a href="login.html" class="text-green-500">¡Ya tienes una cuenta!</a>
-        </p>
-    </form>
-</div>
+            <!-- Número de identificación -->
+            <input type="text"
+                class="numero-id bg-white rounded border border-gray-400 focus:outline-none focus:border-green-500 text-base px-4 py-2 mb-4"
+                placeholder="Número de identificación">
+            <!-- Nombre del usuario -->
+            <input
+                class="bg-white rounded border border-gray-400 focus:outline-none focus:border-green-500 text-base px-4 py-2 mb-4"
+                placeholder="Nombre" type="text">
+            <!-- Email -->
+            <input
+                class="bg-white rounded border border-gray-400 focus:outline-none focus:border-green-500 text-base px-4 py-2 mb-4"
+                placeholder="Email" type="email">
+            <!-- Contraseña -->
+            <input
+                class="bg-white rounded border border-gray-400 focus:outline-none focus:border-green-500 text-base px-4 py-2 mb-4"
+                placeholder="Contraseña" type="password">
+
+            <button
+                class="text-white bg-green-500 border-0 py-2 px-8 focus:outline-none hover:bg-green-600 rounded text-lg">Registrarse</button>
+            <p class="text-xs text-gray-500 mt-3">
+                <a href="index.html" class="text-green-500">Volver al inicio</a> |
+                <a href="login.html" class="text-green-500">¡Ya tienes una cuenta!</a>
+            </p>
+        </form>
+
+    </div>
 
     <script src="script.js"></script>
 </body>
