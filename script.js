@@ -1,10 +1,9 @@
-// Detectar base path para carga de archivos externos
+// Detectar base path automático para GitHub Pages
 const pathParts = window.location.pathname.split('/');
-let basePath = './'; // por defecto para archivos en la raíz
+let projectBase = '/GrapesJSTailWindSialDemo/';
 
-if (pathParts.length > 2) {
-  // Si está en subcarpeta, subir un nivel (o más según necesidad)
-  basePath = '../'.repeat(pathParts.length - 2);
+if (pathParts.length > 1 && pathParts[1]) {
+  projectBase = '/' + pathParts[1] + '/';
 }
 
 // Luego usa basePath para cargar loader y header
