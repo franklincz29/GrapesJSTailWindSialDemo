@@ -7,7 +7,6 @@ if (pathParts.length > 1 && pathParts[1]) {
 }
 
 // Luego usa projectBase para cargar loader y header
-
 fetch(projectBase + 'loader.html')
   .then(response => response.text())
   .then(html => {
