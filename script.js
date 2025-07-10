@@ -6,9 +6,9 @@ if (pathParts.length > 1 && pathParts[1]) {
   projectBase = '/' + pathParts[1] + '/';
 }
 
-// Luego usa basePath para cargar loader y header
+// Luego usa projectBase para cargar loader y header
 
-fetch(basePath + 'loader.html')
+fetch(projectBase + 'loader.html')
   .then(response => response.text())
   .then(html => {
     document.getElementById('loader-placeholder').innerHTML = html;
@@ -20,7 +20,7 @@ fetch(basePath + 'loader.html')
     }
   });
 
-fetch(basePath + 'header.html')
+fetch(projectBase + 'header.html')
   .then(response => response.text())
   .then(html => {
     document.getElementById('header-placeholder').innerHTML = html;
