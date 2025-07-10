@@ -6,7 +6,7 @@ if (pathParts.length > 1 && pathParts[1]) {
   projectBase = '/' + pathParts[1] + '/';
 }
 
-// Luego usa projectBase para cargar loader y header
+// Cargar el efecto loader
 fetch(projectBase + 'loader.html')
   .then(response => response.text())
   .then(html => {
@@ -19,11 +19,13 @@ fetch(projectBase + 'loader.html')
     }
   });
 
+// Cargar el header
 fetch(projectBase + 'header.html')
   .then(response => response.text())
   .then(html => {
     document.getElementById('header-placeholder').innerHTML = html;
 
+    // Agregar botón de logout si está logueado
     if (localStorage.getItem('logueado') === 'true') {
       const userActions = document.getElementById('user-actions');
       if (userActions) {
@@ -36,7 +38,7 @@ fetch(projectBase + 'header.html')
     }
   });
 
-  function ocultarLoader(loader) {
+function ocultarLoader(loader) {
   if (!loader) return;
   setTimeout(() => {
     loader.classList.add('opacity-0', 'pointer-events-none');
@@ -48,11 +50,11 @@ fetch(projectBase + 'header.html')
 
 // Toda la lógica DOM
 document.addEventListener('DOMContentLoaded', () => {
+  // Contacto
   const contactoForm = document.getElementById('contactoForm');
   if (contactoForm) {
     contactoForm.addEventListener('submit', (e) => {
-      e.preventDefault(); // Prevenir envío real (porque no tengo backend)
-      
+      e.preventDefault();
       mostrarModal(
         'Mensaje enviado',
         '¡Gracias por contactarnos! Tu mensaje se envió correctamente.'
@@ -61,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Funciones utilitarias
   function validarEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
@@ -218,8 +221,7 @@ function mostrarModal(titulo, mensaje, redirigir = null) {
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
 
-  const closeBtn = modal.querySelector('#modal-close-btn');
-  closeBtn.addEventListener('click', () => {
+  modal.querySelector('#modal-close-btn').addEventListener('click', () => {
     overlay.remove();
     if (redirigir) {
       window.location.href = redirigir;
@@ -227,7 +229,7 @@ function mostrarModal(titulo, mensaje, redirigir = null) {
   });
 }
 
-//Modal de aplicar oferta
+// Modal para aplicar oferta
 function mostrarModalAplicacion() {
   const overlay = document.createElement('div');
   overlay.className = "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50";
@@ -235,17 +237,17 @@ function mostrarModalAplicacion() {
   const modal = document.createElement('div');
   modal.className = "bg-white rounded-lg shadow-lg p-6 max-w-md w-full text-center";
   modal.innerHTML = `
-                <h2 class="text-xl font-bold mb-4">¡Aplicación enviada!</h2>
-                <p class="mb-6">¡Tu aplicación ha sido registrada exitosamente!</p>
-                <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded">Cerrar</button>
-            `;
+    <h2 class="text-xl font-bold mb-4">¡Aplicación enviada!</h2>
+    <p class="mb-6">¡Tu aplicación ha sido registrada exitosamente!</p>
+    <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded">Cerrar</button>
+  `;
 
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
 
   modal.querySelector('button').addEventListener('click', () => {
     overlay.remove();
-    window.location.href = '/dashboard.html'; 
+    window.location.href = '/dashboard.html';
   });
 }
 
