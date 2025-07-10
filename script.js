@@ -1,5 +1,5 @@
 // Cargar el efecto loader
-fetch('../loader.html')
+fetch('./loader.html')
   .then(response => response.text())
   .then(html => {
     document.getElementById('loader-placeholder').innerHTML = html;
@@ -22,7 +22,7 @@ function ocultarLoader(loader) {
 }
 
 // Cargar el header
-fetch('../header.html')
+fetch('./header.html')
   .then(response => response.text())
   .then(html => {
     document.getElementById('header-placeholder').innerHTML = html;
