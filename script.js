@@ -1,5 +1,5 @@
 // Cargar el efecto loader
-fetch('loader.html')
+fetch('/loader.html')
   .then(response => response.text())
   .then(html => {
     document.getElementById('loader-placeholder').innerHTML = html;
@@ -18,16 +18,15 @@ function ocultarLoader(loader) {
     setTimeout(() => {
       loader.style.display = 'none';
     }, 500);
-  }, 1000);//Forzar el efecto a que sea visible
+  }, 1000); // Forzar el efecto a que sea visible
 }
 
 // Cargar el header
-fetch('header.html')
+fetch('/header.html')
   .then(response => response.text())
   .then(html => {
     document.getElementById('header-placeholder').innerHTML = html;
 
-    // Una vez cargado el header, insertar el botón solo si está logueado
     if (localStorage.getItem('logueado') === 'true') {
       const userActions = document.getElementById('user-actions');
       if (userActions) {
@@ -40,25 +39,84 @@ fetch('header.html')
     }
   });
 
-// Toda la lógica DOM 
+// Toda la lógica DOM
 document.addEventListener('DOMContentLoaded', () => {
-  // Login
+  const contactoForm = document.getElementById('contactoForm');
+  if (contactoForm) {
+    contactoForm.addEventListener('submit', (e) => {
+      e.preventDefault(); // Prevenir envío real (porque no tengo backend)
+      
+      mostrarModal(
+        'Mensaje enviado',
+        '¡Gracias por contactarnos! Tu mensaje se envió correctamente.'
+      );
+      contactoForm.reset();
+    });
+  }
+
+  function validarEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
+
+  function limpiarNumero(numero) {
+    return numero.replace(/\D/g, '');
+  }
+
+  function formatearIdentificacion(tipo, numero) {
+    if (tipo === 'cedula') {
+      return `${numero.slice(0, 2)}-${numero.slice(2, 6)}-${numero.slice(6, 10)}`;
+    } else if (tipo === 'pasaporte') {
+      return `${numero.slice(0, 2)}-${numero.slice(2, 6)}-${numero.slice(6, 10)}-${numero.slice(10, 14)}`;
+    }
+    return numero;
+  }
+
+  function validarIdentificacion(tipo, numero) {
+    numero = limpiarNumero(numero);
+    if (tipo === 'cedula') {
+      return numero.length === 9;
+    } else if (tipo === 'pasaporte') {
+      return numero.length === 13;
+    }
+    return false;
+  }
+
+  // LOGIN
   const loginForm = document.querySelector('form[action="login"]') || document.querySelector('form.login');
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
       const tipoUsuario = loginForm.querySelector('select[name="tipoUsuario"]').value;
       const tipoIdentificacion = loginForm.querySelector('select[name="tipoIdentificacion"]').value;
-      const email = loginForm.querySelector('input[type="email"]').value;
+      const numeroIdentificacionInput = loginForm.querySelector('.numero-id').value.trim();
+      const numeroIdentificacion = limpiarNumero(numeroIdentificacionInput);
+      const email = loginForm.querySelector('input[type="email"]').value.trim();
+      const password = loginForm.querySelector('input[type="password"]').value.trim();
+
+      if (!tipoUsuario) return alert('Por favor selecciona un tipo de usuario.');
+      if (!tipoIdentificacion) return alert('Por favor selecciona un tipo de identificación.');
+      if (!validarIdentificacion(tipoIdentificacion, numeroIdentificacion))
+        return alert(`Número de identificación inválido para ${tipoIdentificacion === 'cedula' ? 'cédula' : 'pasaporte'}.`);
+      if (!validarEmail(email)) return alert('Por favor ingresa un email válido.');
+      if (!password || password.length < 6) return alert('La contraseña debe tener al menos 6 caracteres.');
+
+      const numeroFormateado = formatearIdentificacion(tipoIdentificacion, numeroIdentificacion);
+
       const nombre = localStorage.getItem('nombre');
       localStorage.setItem('logueado', 'true');
       localStorage.setItem('tipoUsuario', tipoUsuario);
       localStorage.setItem('tipoIdentificacion', tipoIdentificacion);
+      localStorage.setItem('numeroIdentificacion', numeroFormateado);
       localStorage.setItem('emailUsuario', email);
 
       mostrarModal(
         `¡Hola ${nombre ? (nombre + ' ') : ''}${tipoUsuario.charAt(0).toUpperCase() + tipoUsuario.slice(1)}!`,
-        `Has iniciado sesión con el correo: <strong>${email}</strong>`
+        `Has iniciado sesión con:<br>
+         Tipo ID: <strong>${tipoIdentificacion}</strong><br>
+         Número ID: <strong>${numeroFormateado}</strong><br>
+         Email: <strong>${email}</strong>`
       );
 
       setTimeout(() => {
@@ -67,29 +125,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Registro
+  // REGISTRO
   const registerForm = document.querySelector('form[action="register"]') || document.querySelector('form.register');
   if (registerForm) {
     registerForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
       const tipoUsuario = registerForm.querySelector('select[name="tipoUsuario"]').value;
       const tipoIdentificacion = registerForm.querySelector('select[name="tipoIdentificacion"]').value;
-      const nombre = registerForm.querySelector('input[placeholder="Nombre"]').value;
-      const email = registerForm.querySelector('input[type="email"]').value;
+      const numeroIdentificacionInput = registerForm.querySelector('.numero-id').value.trim();
+      const numeroIdentificacion = limpiarNumero(numeroIdentificacionInput);
+      const nombre = registerForm.querySelector('input[placeholder="Nombre"]').value.trim();
+      const email = registerForm.querySelector('input[type="email"]').value.trim();
+      const password = registerForm.querySelector('input[type="password"]').value.trim();
+
+      if (!tipoUsuario) return alert('Por favor selecciona un tipo de usuario.');
+      if (!tipoIdentificacion) return alert('Por favor selecciona un tipo de identificación.');
+      if (!validarIdentificacion(tipoIdentificacion, numeroIdentificacion))
+        return alert(`Número de identificación inválido para ${tipoIdentificacion === 'cedula' ? 'cédula' : 'pasaporte'}.`);
+      if (!nombre) return alert('Por favor ingresa tu nombre.');
+      if (!validarEmail(email)) return alert('Por favor ingresa un email válido.');
+      if (!password || password.length < 6) return alert('La contraseña debe tener al menos 6 caracteres.');
+
+      const numeroFormateado = formatearIdentificacion(tipoIdentificacion, numeroIdentificacion);
 
       localStorage.setItem('logueado', 'true');
       localStorage.setItem('tipoUsuario', tipoUsuario);
       localStorage.setItem('tipoIdentificacion', tipoIdentificacion);
+      localStorage.setItem('numeroIdentificacion', numeroFormateado);
       localStorage.setItem('nombre', nombre);
       localStorage.setItem('emailUsuario', email);
 
       mostrarModal("¡Registro exitoso!",
-        `Te registraste como: <strong>${tipoUsuario}</strong> con identificación tipo: <strong>${tipoIdentificacion}</strong><br>Nombre: <strong>${nombre}</strong><br>Email: <strong>${email}</strong>`,
+        `Te registraste como: <strong>${tipoUsuario}</strong><br>
+         Tipo ID: <strong>${tipoIdentificacion}</strong><br>
+         Número ID: <strong>${numeroFormateado}</strong><br>
+         Nombre: <strong>${nombre}</strong><br>
+         Email: <strong>${email}</strong>`,
         'login.html');
     });
   }
 
-  // Cambiar el placeholder del número de identificación en login y register
+  // Cambiar placeholder del input ID según tipo
   document.querySelectorAll('.tipo-id').forEach(select => {
     select.addEventListener('change', (e) => {
       const input = select.parentElement.querySelector('.numero-id');
@@ -98,13 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Botón de logout adicional si existe en el HTML directo
+  // Botón logout en HTML directo
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', logout);
   }
 
-  // Mostrar datos en dashboard.html
+  // Mostrar datos en dashboard
   const userTypeSpan = document.getElementById('userType');
   const emailSpan = document.getElementById('userEmail');
   if (userTypeSpan && emailSpan) {
@@ -112,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     emailSpan.textContent = localStorage.getItem('emailUsuario');
   }
 
-  // Redirección automática si no está logueado y es dashboard
+  // Redirección si no está logueado
   if (window.location.pathname.includes('dashboard.html') && localStorage.getItem('logueado') !== 'true') {
     window.location.href = 'index.html';
   }
@@ -143,62 +220,32 @@ function mostrarModal(titulo, mensaje, redirigir = null) {
   });
 }
 
-// Función utilitaria logout
+//Modal de aplicar oferta
+function mostrarModalAplicacion() {
+  const overlay = document.createElement('div');
+  overlay.className = "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50";
+
+  const modal = document.createElement('div');
+  modal.className = "bg-white rounded-lg shadow-lg p-6 max-w-md w-full text-center";
+  modal.innerHTML = `
+                <h2 class="text-xl font-bold mb-4">¡Aplicación enviada!</h2>
+                <p class="mb-6">¡Tu aplicación ha sido registrada exitosamente!</p>
+                <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded">Cerrar</button>
+            `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  modal.querySelector('button').addEventListener('click', () => {
+    overlay.remove();
+    window.location.href = '/dashboard.html'; 
+  });
+}
+
+// Función logout
 function logout() {
-  ['logueado', 'tipoUsuario', 'tipoIdentificacion', 'emailUsuario', 'nombre'].forEach(key => {
+  ['logueado', 'tipoUsuario', 'tipoIdentificacion', 'numeroIdentificacion', 'emailUsuario', 'nombre'].forEach(key => {
     localStorage.removeItem(key);
   });
   window.location.href = 'index.html';
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Inicializar Swiper para ofertas
-  const swiperOfertas = new Swiper('.mySwiperOfertas', {
-    slidesPerView: 1,
-    spaceBetween: 10,
-    loop: true,
-    pagination: {
-      el: '.mySwiperOfertas .swiper-pagination',
-      clickable: true,
-    },
-    navigation: {
-      nextEl: '.mySwiperOfertas .swiper-button-next',
-      prevEl: '.mySwiperOfertas .swiper-button-prev',
-    },
-    breakpoints: {
-      640: {
-        slidesPerView: 2,
-        spaceBetween: 20,
-      },
-      1024: {
-        slidesPerView: 3,
-        spaceBetween: 30,
-      },
-    },
-  });
-
-  // Inicializar Swiper para profesores
-  const swiperProfesores = new Swiper('.mySwiperProfesores', {
-    slidesPerView: 1,
-    spaceBetween: 10,
-    loop: true,
-    pagination: {
-      el: '.mySwiperProfesores .swiper-pagination',
-      clickable: true,
-    },
-    navigation: {
-      nextEl: '.mySwiperProfesores .swiper-button-next',
-      prevEl: '.mySwiperProfesores .swiper-button-prev',
-    },
-    breakpoints: {
-      640: {
-        slidesPerView: 2,
-        spaceBetween: 20,
-      },
-      1024: {
-        slidesPerView: 3,
-        spaceBetween: 30,
-      },
-    },
-  });
-});
