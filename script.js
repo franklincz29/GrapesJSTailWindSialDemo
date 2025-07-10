@@ -1,5 +1,15 @@
-// Cargar el efecto loader
-fetch('./loader.html')
+// Detectar base path para carga de archivos externos
+const pathParts = window.location.pathname.split('/');
+let basePath = './'; // por defecto para archivos en la raíz
+
+if (pathParts.length > 2) {
+  // Si está en subcarpeta, subir un nivel (o más según necesidad)
+  basePath = '../'.repeat(pathParts.length - 2);
+}
+
+// Luego usa basePath para cargar loader y header
+
+fetch(basePath + 'loader.html')
   .then(response => response.text())
   .then(html => {
     document.getElementById('loader-placeholder').innerHTML = html;
@@ -11,18 +21,7 @@ fetch('./loader.html')
     }
   });
 
-function ocultarLoader(loader) {
-  if (!loader) return;
-  setTimeout(() => {
-    loader.classList.add('opacity-0', 'pointer-events-none');
-    setTimeout(() => {
-      loader.style.display = 'none';
-    }, 500);
-  }, 1000); // Forzar el efecto a que sea visible
-}
-
-// Cargar el header
-fetch('./header.html')
+fetch(basePath + 'header.html')
   .then(response => response.text())
   .then(html => {
     document.getElementById('header-placeholder').innerHTML = html;
@@ -38,6 +37,16 @@ fetch('./header.html')
       }
     }
   });
+
+  function ocultarLoader(loader) {
+  if (!loader) return;
+  setTimeout(() => {
+    loader.classList.add('opacity-0', 'pointer-events-none');
+    setTimeout(() => {
+      loader.style.display = 'none';
+    }, 500);
+  }, 1000); // Forzar el efecto a que sea visible
+}
 
 // Toda la lógica DOM
 document.addEventListener('DOMContentLoaded', () => {
