@@ -23,22 +23,41 @@ fetch(projectBase + 'loader.html')
 fetch(projectBase + 'header.html')
   .then(response => response.text())
   .then(html => {
-    document.getElementById('header-placeholder').innerHTML = html;
+    // Ajustar dinámicamente los paths del header
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+
+    tempDiv.querySelectorAll('a').forEach(a => {
+      const href = a.getAttribute('href');
+      if (href && !href.startsWith('http') && !href.startsWith('#')) {
+        a.setAttribute('href', projectBase + href);
+      }
+    });
+
+    tempDiv.querySelectorAll('img').forEach(img => {
+      const src = img.getAttribute('src');
+      if (src && !src.startsWith('http') && !src.startsWith('#')) {
+        img.setAttribute('src', projectBase + src);
+      }
+    });
+
+    document.getElementById('header-placeholder').innerHTML = tempDiv.innerHTML;
 
     // Agregar botón de logout si está logueado
     if (localStorage.getItem('logueado') === 'true') {
       const userActions = document.getElementById('user-actions');
-      const dashboardLink = document.getElementById('dashboard-link');
-      if (userActions&&dashboardLink) {
+      if (userActions) {
+        const dashboarLink = document.createElement('a');
+        dashboarLink.textContent = 'Dashboard';
+        dashboarLink.className = 'mr-5 hover:text-black-900';
+        dashboarLink.href = projectBase + 'dashboard.html';
+
         const logoutBtn = document.createElement('button');
         logoutBtn.textContent = 'Cerrar sesión';
         logoutBtn.className = 'ml-4 text-white bg-red-500 px-4 py-2 rounded hover:bg-red-600';
         logoutBtn.addEventListener('click', logout);
-        const dashboarLink = document.createElement('a')
-        dashboarLink.textContent = 'Dashboard';
-        dashboarLink.className='class="mr-5 hover:text-black-900"';
-        dashboarLink.href='dashboard.html';
-        userActions.appendChild(dashboardLink);
+
+        userActions.appendChild(dashboarLink);
         userActions.appendChild(logoutBtn);
       }
     }
@@ -51,7 +70,7 @@ function ocultarLoader(loader) {
     setTimeout(() => {
       loader.style.display = 'none';
     }, 500);
-  }, 1000); // Forzar el efecto a que sea visible
+  }, 1000);
 }
 
 // Toda la lógica DOM
@@ -69,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Funciones utilitarias
   function validarEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
@@ -136,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       setTimeout(() => {
-        window.location.href = 'dashboard.html';
+        window.location.href = projectBase + 'dashboard.html';
       }, 2000);
     });
   }
@@ -178,11 +196,10 @@ document.addEventListener('DOMContentLoaded', () => {
          Número ID: <strong>${numeroFormateado}</strong><br>
          Nombre: <strong>${nombre}</strong><br>
          Email: <strong>${email}</strong>`,
-        'login.html');
+        projectBase + 'login.html');
     });
   }
 
-  // Cambiar placeholder del input ID según tipo
   document.querySelectorAll('.tipo-id').forEach(select => {
     select.addEventListener('change', (e) => {
       const input = select.parentElement.querySelector('.numero-id');
@@ -191,13 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Botón logout en HTML directo
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', logout);
   }
 
-  // Mostrar datos en dashboard
   const userTypeSpan = document.getElementById('userType');
   const emailSpan = document.getElementById('userEmail');
   if (userTypeSpan && emailSpan) {
@@ -205,9 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
     emailSpan.textContent = localStorage.getItem('emailUsuario');
   }
 
-  // Redirección si no está logueado
   if (window.location.pathname.includes('dashboard.html') && localStorage.getItem('logueado') !== 'true') {
-    window.location.href = 'index.html';
+    window.location.href = projectBase + 'index.html';
   }
 });
 
@@ -235,7 +249,6 @@ function mostrarModal(titulo, mensaje, redirigir = null) {
   });
 }
 
-// Modal para aplicar oferta
 function mostrarModalAplicacion() {
   const overlay = document.createElement('div');
   overlay.className = "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50";
@@ -253,14 +266,14 @@ function mostrarModalAplicacion() {
 
   modal.querySelector('button').addEventListener('click', () => {
     overlay.remove();
-    window.location.href = '/dashboard.html';
+    window.location.href = projectBase + 'dashboard.html';
   });
 }
 
-// Función logout
+// Función logout original tuya
 function logout() {
   ['logueado', 'tipoUsuario', 'tipoIdentificacion', 'numeroIdentificacion', 'emailUsuario', 'nombre'].forEach(key => {
     localStorage.removeItem(key);
   });
-  window.location.href = 'index.html';
+  window.location.href = projectBase + 'index.html';
 }
