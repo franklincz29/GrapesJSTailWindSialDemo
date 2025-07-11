@@ -1,4 +1,4 @@
-// Detectar base path automático para GitHub Pages
+// Detectar base path de GitHub Pages
 const pathParts = window.location.pathname.split('/');
 let projectBase = '/GrapesJSTailWindSialDemo/';
 
@@ -26,14 +26,14 @@ fetch(projectBase + 'header.html')
     // Ajustar dinámicamente los paths del header
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = html;
-
+    //Para las <a>
     tempDiv.querySelectorAll('a').forEach(a => {
       const href = a.getAttribute('href');
       if (href && !href.startsWith('http') && !href.startsWith('#')) {
         a.setAttribute('href', projectBase + href);
       }
     });
-
+    //Para las <img>
     tempDiv.querySelectorAll('img').forEach(img => {
       const src = img.getAttribute('src');
       if (src && !src.startsWith('http') && !src.startsWith('#')) {
@@ -47,16 +47,17 @@ fetch(projectBase + 'header.html')
     if (localStorage.getItem('logueado') === 'true') {
       const userActions = document.getElementById('user-actions');
       if (userActions) {
+        //Link al dashboard cuando se esta logueado
         const dashboarLink = document.createElement('a');
         dashboarLink.textContent = 'Dashboard';
         dashboarLink.className = 'mr-5 hover:text-black-900';
         dashboarLink.href = projectBase + 'dashboard.html';
-
+        //Boton para cerrar sesion
         const logoutBtn = document.createElement('button');
         logoutBtn.textContent = 'Cerrar sesión';
         logoutBtn.className = 'ml-4 text-white bg-red-500 px-4 py-2 rounded hover:bg-red-600';
         logoutBtn.addEventListener('click', logout);
-
+        //Agregarlos al header
         userActions.appendChild(dashboarLink);
         userActions.appendChild(logoutBtn);
       }
@@ -70,10 +71,12 @@ function ocultarLoader(loader) {
     setTimeout(() => {
       loader.style.display = 'none';
     }, 500);
-  }, 1000);
+  }, 1000);//Forzar al efecto de loading para que sea visible (antes solo se veia en contact)
 }
 
 // Toda la lógica DOM
+//(Document Object Model)
+//Estandar para acceder al contenido HTML desde JavaScript
 document.addEventListener('DOMContentLoaded', () => {
   // Contacto
   const contactoForm = document.getElementById('contactoForm');
@@ -87,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
       contactoForm.reset();
     });
   }
-
+  //Validaciones del los formulario de registro y login
   function validarEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
@@ -270,7 +273,7 @@ function mostrarModalAplicacion() {
   });
 }
 
-// Función logout original tuya
+// Función logout 
 function logout() {
   ['logueado', 'tipoUsuario', 'tipoIdentificacion', 'numeroIdentificacion', 'emailUsuario', 'nombre'].forEach(key => {
     localStorage.removeItem(key);
