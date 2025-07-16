@@ -280,3 +280,38 @@ function logout() {
   });
   window.location.href = projectBase + 'index.html';
 }
+// Carrusel de Ofertas
+const carouselOfertas = document.getElementById('carouselOfertas');
+const imagesOfertas = carouselOfertas.children;
+let indexOfertas = 0;
+
+document.getElementById('nextOfertas').addEventListener('click', () => {
+    indexOfertas = (indexOfertas + 1) % imagesOfertas.length;
+    updateCarousel(carouselOfertas, indexOfertas);
+});
+
+document.getElementById('prevOfertas').addEventListener('click', () => {
+    indexOfertas = (indexOfertas - 1 + imagesOfertas.length) % imagesOfertas.length;
+    updateCarousel(carouselOfertas, indexOfertas);
+});
+
+// Carrusel de Candidatos
+const carouselCandidatos = document.getElementById('carouselCandidatos');
+const imagesCandidatos = carouselCandidatos.children;
+let indexCandidatos = 0;
+
+document.getElementById('nextCandidatos').addEventListener('click', () => {
+    indexCandidatos = (indexCandidatos + 1) % imagesCandidatos.length;
+    updateCarousel(carouselCandidatos, indexCandidatos);
+});
+
+document.getElementById('prevCandidatos').addEventListener('click', () => {
+    indexCandidatos = (indexCandidatos - 1 + imagesCandidatos.length) % imagesCandidatos.length;
+    updateCarousel(carouselCandidatos, indexCandidatos);
+});
+
+// Función común para ambos
+function updateCarousel(carousel, index) {
+    const offset = -index * 100;
+    carousel.style.transform = `translateX(${offset}%)`;
+}
